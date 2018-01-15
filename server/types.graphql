@@ -1,0 +1,19 @@
+# The following types define the data model of the example service
+# based on which the GraphQL API is generated
+
+type User @model {
+  id: ID! @isUnique
+  updatedAt: DateTime!
+  name: String!
+  image: String!
+  deals: [Deal!]! @relation(name: "UserDeals")
+}
+
+type Deal @model {
+  id: ID! @isUnique
+  title: String!
+  description: String!
+  image: String!
+  createdAt: DateTime!
+  author: User! @relation(name: "UserDeals")
+}

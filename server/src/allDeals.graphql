@@ -1,0 +1,7 @@
+type DealPayload {
+  title: String!
+}
+
+extend type Query {
+  deal(name: String): DealPayload
+}
