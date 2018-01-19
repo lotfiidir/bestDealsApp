@@ -21,6 +21,12 @@ export default class Deal extends React.Component {
         const {width, height} = this.state;
         return (
             <View>
+                <Text style={styles.title}>
+                    {this.props.title}
+                </Text>
+                <Text style={styles.title}>
+                    {this.props.description}
+                </Text>
                 <View style={styles.imageContainer}>
                     <Image
                         source={{ uri: this.props.image }}
@@ -28,12 +34,6 @@ export default class Deal extends React.Component {
                         resizeMode='contain'
                     />
                 </View>
-                <Text style={styles.title}>
-                    {this.props.title}
-                </Text>
-                <Text style={styles.title}>
-                    {this.props.description}
-                </Text>
             </View>
         )
     }
@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
         padding: 22,
         color: 'rgba(0,0,0,.8)',
         fontWeight: '300',
-        fontSize: 16,
+        fontSize: 20,
     },
 });
