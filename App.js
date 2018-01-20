@@ -5,6 +5,7 @@ import {AppNavigator} from './src/router/router';
 
 
 export default class App extends React.Component {
+
     render() {
         return (
             <AppNavigator/>

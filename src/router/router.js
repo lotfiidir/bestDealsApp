@@ -18,7 +18,7 @@ export const AppNavigator = StackNavigator({
             tabBarPosition: 'top',
             animationEnabled: true,
             tabBarOptions: {
-                activeTintColor: '#e91e63',
+                activeTintColor: '#e2d7e9',
             },
         })
     },
@@ -30,6 +30,11 @@ export const AppNavigator = StackNavigator({
 export const TabNav = TabNavigator({
     Home: {
         screen: HomeScreen,
+        navigationOptions: {
+            title: 'Best deals',
+            tabBarLabel: 'Carte',
+
+        },
     },
     Map: {
         screen: MapScreen,
@@ -38,6 +43,6 @@ export const TabNav = TabNavigator({
     tabBarPosition: 'top',
     animationEnabled: true,
     tabBarOptions: {
-        activeTintColor: '#e91e63',
+        activeTintColor: '#e9dd61',
     },
 });

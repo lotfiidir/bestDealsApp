@@ -3,14 +3,10 @@ import { StyleSheet, Text, View } from 'react-native'
 
 
 export default class MapScreen extends React.Component {
-    static navigationOptions = {
-        tabBarLabel: 'Carte',
-
-    };
     render() {
         return (
-            <View>
-                <Text>MAP VIEW</Text>
+            <View style={styles.map}>
+                <Text h2>MAP VIEW</Text>
             </View>
         );
 
@@ -24,4 +20,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    map: {
+        flex:1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 });

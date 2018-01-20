@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,.07)'
     },
     title: {
-        padding: 22,
+        paddingLeft: 20,
         color: 'rgba(0,0,0,.8)',
         fontWeight: '300',
         fontSize: 20,

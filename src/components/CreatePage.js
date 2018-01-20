@@ -89,7 +89,7 @@ class CreatePage extends React.Component {
     }
 
     _createDeal = async () => {
-        const {description, image, title} = this.state
+        const {description, image, title} = this.state;
         await this.props.createDealMutation({
             variables: {description, image, title}
         });

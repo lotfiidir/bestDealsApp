@@ -43,7 +43,6 @@ class ListPage extends React.Component {
         if (this.props.allDealsQuery.loading) {
             return (<Text>Loading</Text>)
         }
-        console.log(this);
         //const {navigate} = this.props.navigation;
         return (
             <View style={styles.container}>
@@ -52,6 +51,7 @@ class ListPage extends React.Component {
                     animationType='slide'
                     transparent={true}
                     visible={this.state.modalVisible}
+                    onRequestClose={() => this._closeModal()}
                 >
                     <CreatePage
                         onComplete={() => {
@@ -65,12 +65,11 @@ class ListPage extends React.Component {
                     dataSource={this.state.dataSource}
                     renderRow={(deal) => (
                         <View>
-                            <TouchableHighlight onPress={this._goToDeal}>
                                 <Deal
                                     title={deal.title}
                                     image={deal.image}
                                 />
-                            </TouchableHighlight>
+                            <Button title="Go to detail" onLongPress={this._goToDeal} onPress={()=> this.props.navigation.navigate('DetailScreen')}/>
                         </View>
                     )}
                 />
@@ -84,23 +83,24 @@ class ListPage extends React.Component {
         )
     }
 
-    _goToDeal = () => {
-        console.log('Deals Pressed');
-        //navigate('DetailScreen', {name: 'Jane'})
+    _goToDeal = (e) => {
+        //console.log('Deals Pressed nav', this.props);
 
-        //this.propTypes.navigation.navigate("DetailScreen")
+        this.props.navigation.navigate('DetailScreen');
     };
     _createDeal = () => {
         // this.props.router.push('/create');
         this.setState({modalVisible: true})
-
+    };
+    _closeModal = () => {
+        this.setState({modalVisible: false});
     }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 22
+        paddingTop: 20
     },
     createDealButtonContainer: {
         justifyContent: 'center',
