@@ -1,31 +1,61 @@
 import {StackNavigator, TabNavigator} from 'react-navigation';
 
-import HomeScreen from "../screens/HomeScreen";
-import ListPage from "../components/ListPage";
-import DetailPage from "../components/DetailPage";
+//import HomeScreen from "../screens/HomeScreen";
+//import ListPage from "../components/ListPage";
+//import DetailPage from "../components/DetailPage";
 import MapScreen from "../screens/MapScreen";
+import Deals from "../components/Deals";
 
-export const AppNavigator = StackNavigator({
+const RouteConfig = {
     Home: {
-        screen: TabNavigator({
-            Home: {
-                screen: HomeScreen,
-            },
-            Map: {
-                screen: MapScreen,
-            },
-        }, {
-            tabBarPosition: 'top',
-            animationEnabled: true,
-            tabBarOptions: {
-                activeTintColor: '#e2d7e9',
-            },
-        })
+        screen: Deals,
+        navigationOptions: {
+            title: 'Best deals',
+            tabBarLabel: 'Accueil',
+        },
     },
-    Detail: {
-        screen: DetailPage,
-    },
-});
+    Map: {
+        screen: MapScreen,
+        navigationOptions: {
+            title: 'Best deals',
+            tabBarLabel: 'Carte',
+        },
+    }
+};
+
+const TabConfig = {
+    tabBarPosition: 'top',
+    animationEnabled: true,
+    tabBarOptions: {
+        activeTintColor: '#e9dd61',
+    }
+};
+
+export const AppNavigator = TabNavigator(RouteConfig, TabConfig);
+
+
+/*
+export const AppNavigator = StackNavigator({
+        Home: {
+            screen: TabNavigator({
+                Home: {
+                    screen: HomeScreen,
+                },
+                Map: {
+                    screen: MapScreen,
+                },
+            }, {
+                tabBarPosition: 'top',
+                animationEnabled: true,
+                tabBarOptions: {
+                    activeTintColor: '#e2d7e9',
+                },
+            })
+        },
+        Detail: {
+            screen: DetailPage,
+        },
+    });
 
 export const TabNav = TabNavigator({
     Home: {
@@ -33,7 +63,6 @@ export const TabNav = TabNavigator({
         navigationOptions: {
             title: 'Best deals',
             tabBarLabel: 'Carte',
-
         },
     },
     Map: {
@@ -45,4 +74,4 @@ export const TabNav = TabNavigator({
     tabBarOptions: {
         activeTintColor: '#e9dd61',
     },
-});
+});*/

@@ -1,8 +1,10 @@
 import React from 'react'
-import Deal from './Deal'
 import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 import {View, TouchableHighlight, ListView, Modal, StyleSheet, Text, Button} from 'react-native';
+import { StackNavigator } from 'react-navigation';
+
+import Deal from './Deal'
 import CreatePage from './CreatePage'
 import DetailScreen from "../screens/DetailScreen";
 
@@ -16,6 +18,20 @@ const allDealsQuery = gql`
         }
     }`;
 
+const allDealsQuerySubscription = gql`
+    subscription {
+        Deal(filter: {
+            mutation_in: [CREATED]
+        }) {
+            node {
+                id
+                image
+                title
+                description
+            }
+        }
+    }
+`;
 
 class ListPage extends React.Component {
 
@@ -69,7 +85,7 @@ class ListPage extends React.Component {
                                     title={deal.title}
                                     image={deal.image}
                                 />
-                            <Button title="Go to detail" onLongPress={this._goToDeal} onPress={()=> this.props.navigation.navigate('DetailScreen')}/>
+                            <Button title="Go to detail" onLongPress={this._goToDeal} onPress={()=> this._goToDeal}/>
                         </View>
                     )}
                 />
@@ -117,4 +133,9 @@ const styles = StyleSheet.create({
     }
 });
 
-export default graphql(allDealsQuery, {name: 'allDealsQuery'})(ListPage)
+const NavigationDeal = StackNavigator({
+    ListPage: { screen: graphql(allDealsQuery, {name: 'allDealsQuery'})(ListPage) },
+    DetailScreen: { screen: DetailScreen },
+});
+
+export default NavigationDeal;

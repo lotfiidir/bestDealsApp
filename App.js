@@ -1,24 +1,18 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import {ApolloProvider} from 'react-apollo';
 
-import {AppNavigator} from './src/router/router';
+import {AppNavigator as Router} from './src/router/router';
+import client from "./src/client";
 
+// AppNavigator component is router for the app
 
 export default class App extends React.Component {
 
     render() {
         return (
-            <AppNavigator/>
+        <ApolloProvider client={client}>
+            <Router/>
+        </ApolloProvider>
         );
-
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});

@@ -4,6 +4,7 @@ import {ApolloProvider} from 'react-apollo';
 
 import client from "../client";
 import ListPage from "../components/ListPage"
+import Deals from "../components/Deals"
 
 
 export default class HomeScreen extends Component {
@@ -15,9 +16,7 @@ export default class HomeScreen extends Component {
 
     render() {
         return (
-            <ApolloProvider client={client}>
-                <ListPage {...this.props}/>
-            </ApolloProvider>
+            <Deals/>
         );
     }
 }

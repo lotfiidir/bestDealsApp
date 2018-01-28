@@ -1,9 +1,18 @@
-import React from 'react'
-import { View, Image, Text, StyleSheet } from 'react-native'
+import React, {Component} from 'react'
+import { Image, Text, StyleSheet, Dimensions, ScrollView } from 'react-native'
 
-export default class Deal extends React.Component {
+const {width} = Dimensions.get('window');
 
-    state = {
+const Field = ({name, value}) => <Text style={styles.field}>{`${name}: ${value}`}</Text>
+
+export default class Deal extends Component {
+    static navigationOptions = (props) => {
+        const {title} = props.navigation.state.params.deal;
+        return ({
+            title: title
+        })
+    };
+    /*state = {
         width: 0,
         height: 0,
     };
@@ -15,40 +24,42 @@ export default class Deal extends React.Component {
             const imageWidth = width / scaleFactor;
             this.setState({width: imageWidth, height: imageHeight});
         })
-    }
+    }*/
 
     render () {
-        const {width, height} = this.state;
+        //const {width, height} = this.state;
+        const {image, title, description} = this.props.navigation.state.params.deal;
         return (
-            <View>
-                <Text style={styles.title}>
-                    {this.props.title}
-                </Text>
-                <Text style={styles.title}>
-                    {this.props.description}
-                </Text>
-                <View style={styles.imageContainer}>
-                    <Image
-                        source={{ uri: this.props.image }}
-                        style={{width, height}}
-                        resizeMode='contain'
-                    />
-                </View>
-            </View>
+            <ScrollView style={styles.container}>
+                {
+                    image && (
+                        <Image
+                            resizeMode='contain'
+                            source={{uri:image}}
+                            style={styles.image}
+                        />
+                    )
+                }
+                { title && <Field name='Title' value={title} />}
+                { description && <Field name='Description' value={description} />}
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    imageContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,.07)'
+    container: {
+        padding: 20,
+    },
+    image: {
+        height: 200,
+        width,
+        marginBottom: 20,
+    },
+    field: {
+        marginBottom: 4,
     },
     title: {
-        paddingLeft: 20,
-        color: 'rgba(0,0,0,.8)',
-        fontWeight: '300',
-        fontSize: 20,
-    },
+        fontSize: 18,
+    }
 });
