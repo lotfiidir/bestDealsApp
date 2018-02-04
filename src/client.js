@@ -1,28 +1,18 @@
-import { ApolloClient, createNetworkInterface } from 'react-apollo';
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+
+import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-client-preset'
 
 
 
-const PROJECT_ID = 'cjcdgoedg0bj10119crfhg2f9';
-const NETWORK_INTERFACE_URL = `https://api.graph.cool/simple/v1/${PROJECT_ID}`;
-const SUSBSCRIPTION_CLIENT_URL = `wss://subscriptions.graph.cool/v1/${PROJECT_ID}`;
+const NETWORK_INTERFACE_URL = `https://api.graph.cool/simple/v1/__SIMPLE_API_ENDPOINT__`;
+const SUSBSCRIPTION_CLIENT_URL = `wss://subscriptions.graph.cool/v1/__SIMPLE_API_ENDPOINT__`;
 
-const wsClient = new SubscriptionClient(SUSBSCRIPTION_CLIENT_URL, {
-    reconnect: true
-});
-
-const networkInterface = createNetworkInterface({
+const httpLink = new HttpLink({
     uri: NETWORK_INTERFACE_URL
 });
 
-const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
-    networkInterface,
-    wsClient
-);
-
-
 const client = new ApolloClient({
-    networkInterface: networkInterfaceWithSubscriptions,
+    link: httpLink,
+    cache: new InMemoryCache()
 });
 
 export default client;

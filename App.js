@@ -7,7 +7,6 @@ import client from "./src/client";
 // AppNavigator component is router for the app
 
 export default class App extends React.Component {
-
     render() {
         return (
         <ApolloProvider client={client}>

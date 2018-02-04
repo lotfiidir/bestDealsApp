@@ -7,16 +7,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "apollo-client-preset": "^1.0.8",
     "graphql": "^0.12.3",
     "graphql-tag": "^2.6.1",
     "react": "^16.2.0",
-    "react-apollo": "^1.4.16",
-    "react-native": "^0.45.1",
-    "react-native-elements": "^0.13.0",
-    "react-native-maps": "^0.19.0",
+    "react-apollo": "^2.0.4",
+    "react-native": "^0.52.2",
+    "react-native-elements": "^0.19.0",
     "react-native-vector-icons": "^4.5.0",
-    "react-navigation": "^1.0.0-beta.29",
-    "subscriptions-transport-ws": "^0.7.3"
+    "react-navigation": "^1.0.0-beta.29"
   },
   "devDependencies": {
     "babel-jest": "22.0.4",

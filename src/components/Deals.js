@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet, Image, ScrollView, ActivityIndicator} from 'react-native';
-import {gql, graphql} from 'react-apollo';
+import {graphql} from 'react-apollo';
+import gql from 'graphql-tag'
 import {StackNavigator} from 'react-navigation';
 import { ListItem } from 'react-native-elements';
 
@@ -16,7 +17,7 @@ const allDealsQuery = gql`
         }
     }`;
 
-const allDealsQuerySubscription = gql`
+/*const allDealsQuerySubscription = gql`
     subscription {
         Deal(filter: {
             mutation_in: [CREATED]
@@ -28,10 +29,10 @@ const allDealsQuerySubscription = gql`
             }
         }
     }
-`;
+`;*/
 
 class Deals extends Component {
-    componentWillMount() {
+    /*componentWillMount() {
         this.props.data.subscribeToMore({
             document: allDealsQuerySubscription,
             updateQuery: (prev, {subscriptionData}) => {
@@ -45,7 +46,7 @@ class Deals extends Component {
                 }
             }
         })
-    }
+    }*/
 
     render() {
         const {loading} = this.props.data;
@@ -53,6 +54,7 @@ class Deals extends Component {
         if (this.props.data.allDeals) {
             deals = this.props.data.allDeals;
         }
+        console.log(deals);
         return (
             <ScrollView>
                 {loading && <ActivityIndicator style={{marginTop: 250}}/>}
