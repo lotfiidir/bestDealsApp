@@ -31,7 +31,7 @@ class CreatePage extends React.Component {
     render() {
 
         return (
-            <ScrollView>
+            <ScrollView style={styles.ScrollContainer}>
                 <View style={styles.container}>
                     <View style={styles.addImageContainer}>
                         <View style={styles.addImage}>
@@ -99,13 +99,12 @@ class CreatePage extends React.Component {
 
 
 const styles = StyleSheet.create({
+    ScrollContainer:{
+      flex:1,
+        backgroundColor:'#FFF'
+    },
     container: {
-        flex: 1,
-        minHeight:600,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        backgroundColor: 'rgba(255,255,255,1)'
+
     },
     addImageContainer: {
         backgroundColor: 'rgba(0,0,0,.03)',

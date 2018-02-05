@@ -40,7 +40,6 @@ export default class Deal extends Component {
                         />
                     )
                 }
-                { title && <Field name='Title' value={title} />}
                 { description && <Field name='Description' value={description} />}
             </ScrollView>
         )

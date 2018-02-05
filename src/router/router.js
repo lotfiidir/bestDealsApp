@@ -10,21 +10,19 @@ const RouteConfig = {
     Home: {
         screen: Deals,
         navigationOptions: {
-            title: 'Best deals',
             tabBarLabel: 'Accueil',
         },
     },
     Map: {
         screen: MapScreen,
         navigationOptions: {
-            title: 'Best deals',
             tabBarLabel: 'Carte',
         },
     }
 };
 
 const TabConfig = {
-    tabBarPosition: 'top',
+    tabBarPosition: 'bottom',
     animationEnabled: true,
     tabBarOptions: {
         activeTintColor: '#e9dd61',
