@@ -42,7 +42,7 @@ buck-out/
 *.keystore
 
 #Client graphcool project id
-src/client.js
+./src/client.js
 
 # fastlane
 #

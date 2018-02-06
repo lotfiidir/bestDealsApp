@@ -1,9 +1,6 @@
 import {StackNavigator, TabNavigator} from 'react-navigation';
 
-//import HomeScreen from "../screens/HomeScreen";
-//import ListPage from "../components/ListPage";
-//import DetailPage from "../components/DetailPage";
-import MapScreen from "../screens/MapScreen";
+import Map from "../components/Map";
 import Deals from "../components/Deals";
 
 const RouteConfig = {
@@ -14,7 +11,7 @@ const RouteConfig = {
         },
     },
     Map: {
-        screen: MapScreen,
+        screen: Map,
         navigationOptions: {
             tabBarLabel: 'Carte',
         },
@@ -25,7 +22,7 @@ const TabConfig = {
     tabBarPosition: 'bottom',
     animationEnabled: true,
     tabBarOptions: {
-        activeTintColor: '#e9dd61',
+        activeTintColor: '#eeeeee',
     }
 };
 

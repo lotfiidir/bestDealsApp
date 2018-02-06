@@ -9,7 +9,6 @@ import Deals from "../components/Deals"
 
 export default class HomeScreen extends Component {
     static navigationOptions = {
-        title: 'Best deals',
         tabBarLabel: 'Home'
 
     };
