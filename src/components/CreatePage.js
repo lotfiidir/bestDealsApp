@@ -4,17 +4,16 @@ import gql from 'graphql-tag'
 import {
     View,
     TextInput,
-    Button,
     Image,
     Text,
     StyleSheet,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
 } from 'react-native'
 
 const createDealMutation = gql`
-    mutation ($description: String!, $image: String!, $title: String!){
-        createDeal(description: $description, image: $image, title:$title) {
+    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int){
+        createDeal(description: $description, image: $image, title: $title, reduction: $reduction) {
             id
         }
     }
@@ -26,6 +25,7 @@ class CreatePage extends React.Component {
         description: '',
         image: '',
         title: '',
+        reduction: null,
     };
 
     render() {
@@ -49,7 +49,7 @@ class CreatePage extends React.Component {
                             </View>
                             <TextInput
                                 style={styles.imageInput}
-                                placeholder='Paste your image URL here...'
+                                placeholder="Coller l'url de l'image ici..."
                                 onChangeText={(text) => this.setState({image: text})}
                                 value={this.state.image}
                                 placeholderTextColor='rgba(42,126,211,.5)'
@@ -58,15 +58,22 @@ class CreatePage extends React.Component {
                     </View>
                     <TextInput
                         style={styles.descriptionInput}
-                        placeholder='Type a title...'
+                        placeholder='Titre...'
                         onChangeText={(text) => this.setState({title: text})}
                         value={this.state.title}
                     />
                     <TextInput
                         style={styles.descriptionInput}
-                        placeholder='Type a description...'
+                        placeholder='Description...'
                         onChangeText={(text) => this.setState({description: text})}
                         value={this.state.description}
+                    />
+                    <TextInput
+                        style={styles.reductionInput}
+                        keyboardType='numeric'
+                        placeholder='% de la réduction...'
+                        onChangeText={(number) => this.setState({reduction: number})}
+                        value={this.state.reduction}
                     />
 
                     <View style={styles.buttons}>
@@ -99,13 +106,11 @@ class CreatePage extends React.Component {
 
 
 const styles = StyleSheet.create({
-    ScrollContainer:{
-      flex:1,
-        backgroundColor:'#FFF'
+    ScrollContainer: {
+        flex: 1,
+        backgroundColor: '#FFF'
     },
-    container: {
-
-    },
+    container: {},
     addImageContainer: {
         backgroundColor: 'rgba(0,0,0,.03)',
     },
@@ -127,6 +132,11 @@ const styles = StyleSheet.create({
         height: 60,
     },
     descriptionInput: {
+        paddingHorizontal: 20,
+        height: 100,
+        fontSize: 20,
+    },
+    reductionInput: {
         paddingHorizontal: 20,
         height: 100,
         fontSize: 20,

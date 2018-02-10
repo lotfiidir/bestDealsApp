@@ -15,6 +15,10 @@ const allDealsQuery = gql`
             image
             title
             description
+            location {
+                latitude
+                longitude
+            }
         }
     }`;
 

@@ -25,8 +25,8 @@ class Map extends Component {
         this.state = {
             deals: {
                 location: {
-                    latitude: 37.78825,
-                    longitude: -122.4324,
+                    latitude: 49.209355,
+                    longitude: -0.363901,
                 },
                 title: '',
             },
@@ -118,8 +118,8 @@ class Map extends Component {
                     provider={PROVIDER_GOOGLE}
                     style={styles.map}
                     initialRegion={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
+                        latitude: 49.209355,
+                        longitude: -0.363901,
                         latitudeDelta: 0.015,
                         longitudeDelta: 0.0121,
                     }}

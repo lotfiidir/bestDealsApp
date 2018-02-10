@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { Image, Text, StyleSheet, Dimensions, ScrollView } from 'react-native'
+import MapView, {PROVIDER_GOOGLE, Marker} from "react-native-maps";
 
 const {width} = Dimensions.get('window');
 
@@ -28,7 +29,7 @@ export default class Deal extends Component {
 
     render () {
         //const {width, height} = this.state;
-        const {image, title, description} = this.props.navigation.state.params.deal;
+        const {image, description, location} = this.props.navigation.state.params.deal;
         return (
             <ScrollView style={styles.container}>
                 {
@@ -41,6 +42,18 @@ export default class Deal extends Component {
                     )
                 }
                 { description && <Field name='Description' value={description} />}
+                <MapView
+                    provider={PROVIDER_GOOGLE}
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                        latitudeDelta: 0.1,
+                        longitudeDelta: 0.1 * (width/250),
+                    }}
+                >
+                    <Marker coordinate={location} />
+                </MapView>
             </ScrollView>
         )
     }
@@ -60,5 +73,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
+    },
+    map:{
+      height:250
     }
 });
