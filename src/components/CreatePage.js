@@ -6,30 +6,106 @@ import {
     TextInput,
     Image,
     Text,
+    Modal,
     StyleSheet,
+    CameraRoll,
+    BackHandler,
     ScrollView,
     TouchableHighlight,
-} from 'react-native'
+} from 'react-native';
+import Camera from 'react-native-camera';
+import {Icon} from 'react-native-elements';
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+
 
 const createDealMutation = gql`
-    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int){
-        createDeal(description: $description, image: $image, title: $title, reduction: $reduction) {
+    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int, $location: DeallocationLocation, $category:[Enum]! ){
+        createDeal(description: $description, image: $image, title: $title, reduction: $reduction, location: $location, category: [Sante] ) {
             id
+            location {
+                id
+            }
         }
     }
 `;
 
-class CreatePage extends React.Component {
 
-    state = {
-        description: '',
-        image: '',
-        title: '',
-        reduction: null,
-    };
+class CreatePage extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            description: '',
+            image: '',
+            title: '',
+            reduction: null,
+            location: null,
+            modalVisible: false,
+            category: {
+                accessoires: 'Accessoires & gadgets',
+                alimentation: 'Alimentation & boissons',
+                animaux: 'Animaux',
+                culture: 'Culture & divertissement',
+                applis: 'Applis & logiciels',
+                mode: 'Mode & accessoires',
+                divers: 'Services divers',
+                image: 'Image, son & vidéo',
+                sport: 'Sport & plein air',
+                voyages: 'Voyages & sorties',
+                informatique: 'Informatique',
+                jeux: 'Consoles & jeux vidéo',
+                maison: 'Maison & jardins',
+                cosmetiques: 'Santé & cosmétiques',
+                telephonie: 'Téléphonie',
+            }
+        };
+    }
+
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
+    }
+
+    componentDidMount() {
+
+        setTimeout(() => {
+            LocationServicesDialogBox.checkLocationServicesIsEnabled({
+                message: "<h2>Utiliser la géolocalisation ?</h2> \
+                            Pour pouvoir ajouter un bon plan:<br/><br/>\
+                            Utiliser le GPS pour la localisation<br/><br/>",
+                ok: "OUI",
+                cancel: "NON",
+            }).then(() => {
+                    this.watchId = navigator.geolocation.watchPosition(position => {
+                        this.setState({
+                            location: {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            }
+                        })
+                    })
+                }, (error) => {
+                    console.log(error);
+                },
+                {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10},
+            )
+                .then(() => {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        this.setState({
+                            location: {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            }
+                        })
+                    })
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }, 200)
+
+    }
 
     render() {
-
         return (
             <ScrollView style={styles.ScrollContainer}>
                 <View style={styles.container}>
@@ -47,6 +123,23 @@ class CreatePage extends React.Component {
                                         <View style={styles.photoPlaceholder}/>
                                 }
                             </View>
+                            <Modal
+                                animationType='slide'
+                                transparent={true}
+                                visible={this.state.modalVisible}
+                                onRequestClose={() => this._closeModal()}>
+                                <Camera style={styles.camera}
+                                        ref={(cam) => this.camera = cam}
+                                        captureQuality="medium"
+                                        captureTarget={Camera.constants.CaptureTarget.temp}>
+                                    <Icon
+                                        raised
+                                        name='camera'
+                                        containerStyle={styles.iconCamera}
+                                        onPress={this.takePicture.bind(this)}/>
+                                </Camera>
+                            </Modal>
+                            <Text onPress={() => this._openModal()}>Capturer</Text>
                             <TextInput
                                 style={styles.imageInput}
                                 placeholder="Coller l'url de l'image ici..."
@@ -72,9 +165,18 @@ class CreatePage extends React.Component {
                         style={styles.reductionInput}
                         keyboardType='numeric'
                         placeholder='% de la réduction...'
-                        onChangeText={(number) => this.setState({reduction: number})}
+                        onChangeText={(number) => this.setState({reduction: parseInt(number)})}
                         value={this.state.reduction}
                     />
+                    <View>
+                        <Text>Catégorie </Text>
+                        {this.state.category.map((cat, index) => {
+                            return (
+                                <Text>{cat}</Text>
+                            )
+
+                        })}
+                    </View>
 
                     <View style={styles.buttons}>
                         <TouchableHighlight
@@ -96,11 +198,40 @@ class CreatePage extends React.Component {
     }
 
     _createDeal = async () => {
-        const {description, image, title} = this.state;
-        await this.props.createDealMutation({
-            variables: {description, image, title}
-        });
-        this.props.onComplete()
+        const {description, image, title, reduction, location} = this.state;
+        this.componentDidMount();
+        if (location != null) {
+            await this.props.createDealMutation({
+                variables: {description, image, title, reduction, location}
+            });
+            this.props.onComplete()
+        }
+
+    };
+
+    _openModal = () => {
+        this.setState({modalVisible: true})
+    };
+
+    _closeModal = () => {
+        this.setState({modalVisible: false});
+    };
+
+    takePicture() {
+        this.camera.capture()
+            .then((data) => {
+                console.log("data", data);
+                this.setState({image: data.path});
+                this._closeModal();
+                CameraRoll.getPhotos({
+                    first: 1,
+                    assetType: 'Photos'
+                })
+                    .then(r => {
+                        console.log(r.edges);
+                    });
+            })
+            .catch(err => console.error(err));
     }
 }
 
@@ -111,6 +242,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF'
     },
     container: {},
+    camera: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    iconCamera: {
+        flex: 0,
+        borderRadius: 5,
+        padding: 10,
+        margin: 40
+    },
     addImageContainer: {
         backgroundColor: 'rgba(0,0,0,.03)',
     },

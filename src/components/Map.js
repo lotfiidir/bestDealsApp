@@ -109,8 +109,6 @@ class Map extends Component {
         if (this.props.data.allDeals) {
             deals = this.props.data.allDeals;
         }
-        console.log(deals);
-
         return (
 
             <View style={styles.container}>
