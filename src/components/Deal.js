@@ -1,6 +1,10 @@
 import React, {Component} from 'react'
-import { Image, Text, StyleSheet, Dimensions, ScrollView } from 'react-native'
+import {Image, Text, StyleSheet, Dimensions, ScrollView} from 'react-native'
 import MapView, {PROVIDER_GOOGLE, Marker} from "react-native-maps";
+import {Icon} from 'react-native-elements';
+import {DrawerNavigator} from 'react-navigation';
+
+import UpdateDeal from './UpdateDeal';
 
 const {width} = Dimensions.get('window');
 
@@ -10,9 +14,11 @@ export default class Deal extends Component {
     static navigationOptions = (props) => {
         const {title} = props.navigation.state.params.deal;
         return ({
-            title: title
+            title: title,
+            headerRight: <Icon name="more-vert" iconType='material' size={25} onPress={() => console.log('menu')}/>
         })
     };
+
     /*state = {
         width: 0,
         height: 0,
@@ -27,21 +33,25 @@ export default class Deal extends Component {
         })
     }*/
 
-    render () {
+    render() {
         //const {width, height} = this.state;
-        const {image, description, location} = this.props.navigation.state.params.deal;
+        const {image, description, location, reduction, category} = this.props.navigation.state.params.deal;
         return (
             <ScrollView style={styles.container}>
                 {
                     image && (
                         <Image
                             resizeMode='contain'
-                            source={{uri:image}}
+                            source={{uri: image}}
                             style={styles.image}
                         />
                     )
                 }
-                { description && <Field name='Description' value={description} />}
+                {description && <Field name='Description' value={description}/>}
+                {reduction && <Field name='Reduction' value={`- ${reduction}%`}/>}
+                {category && <Field name='Categorie' value={category.map((cat) => {
+                    return ` ${cat.value}`;
+                })}/>}
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     style={styles.map}
@@ -49,10 +59,10 @@ export default class Deal extends Component {
                         latitude: location.latitude,
                         longitude: location.longitude,
                         latitudeDelta: 0.1,
-                        longitudeDelta: 0.1 * (width/250),
+                        longitudeDelta: 0.1 * (width / 250),
                     }}
                 >
-                    <Marker coordinate={location} />
+                    <Marker coordinate={location}/>
                 </MapView>
             </ScrollView>
         )
@@ -74,7 +84,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
     },
-    map:{
-      height:250
+    map: {
+        height: 250
     }
 });

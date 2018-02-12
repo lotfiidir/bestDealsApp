@@ -14,13 +14,13 @@ import {
     TouchableHighlight,
 } from 'react-native';
 import Camera from 'react-native-camera';
-import {Icon} from 'react-native-elements';
+import {Icon, CheckBox} from 'react-native-elements';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 
 const createDealMutation = gql`
-    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int, $location: DeallocationLocation, $category:[Enum]! ){
-        createDeal(description: $description, image: $image, title: $title, reduction: $reduction, location: $location, category: [Sante] ) {
+    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int, $location: DeallocationLocation, $category: Json ){
+        createDeal(description: $description, image: $image, title: $title, reduction: $reduction, location: $location, category: $category ) {
             id
             location {
                 id
@@ -41,23 +41,70 @@ class CreatePage extends React.Component {
             reduction: null,
             location: null,
             modalVisible: false,
-            category: {
-                accessoires: 'Accessoires & gadgets',
-                alimentation: 'Alimentation & boissons',
-                animaux: 'Animaux',
-                culture: 'Culture & divertissement',
-                applis: 'Applis & logiciels',
-                mode: 'Mode & accessoires',
-                divers: 'Services divers',
-                image: 'Image, son & vidéo',
-                sport: 'Sport & plein air',
-                voyages: 'Voyages & sorties',
-                informatique: 'Informatique',
-                jeux: 'Consoles & jeux vidéo',
-                maison: 'Maison & jardins',
-                cosmetiques: 'Santé & cosmétiques',
-                telephonie: 'Téléphonie',
-            }
+            checked: false,
+            items: {},
+            category: [
+                {
+                    value: 'Accessoires & gadgets',
+                    checked: false
+                },
+                {
+                    value: 'Alimentation & boissons',
+                    checked: false
+                },
+                {
+                    value: 'Animaux',
+                    checked: false
+                },
+                {
+                    value: 'Culture & divertissement',
+                    checked: false
+                },
+                {
+                    value: 'Applis & logiciels',
+                    checked: false
+                },
+                {
+                    value: 'Mode & accessoires',
+                    checked: false
+                },
+                {
+                    value: 'Services divers',
+                    checked: false
+                },
+                {
+                    value: 'Image, son & vidéo',
+                    checked: false
+                },
+                {
+                    value: 'Sport & plein air',
+                    checked: false
+                },
+                {
+                    value: 'Voyages & sorties',
+                    checked: false
+                },
+                {
+                    value: 'Informatique',
+                    checked: false
+                },
+                {
+                    value: 'Consoles & jeux vidéo',
+                    checked: false
+                },
+                {
+                    value: 'Maison & jardins',
+                    checked: false
+                },
+                {
+                    value: 'Santé & cosmétiques',
+                    checked: false
+                },
+                {
+                    value: 'Téléphonie',
+                    checked: false
+                }
+            ]
         };
     }
 
@@ -168,15 +215,28 @@ class CreatePage extends React.Component {
                         onChangeText={(number) => this.setState({reduction: parseInt(number)})}
                         value={this.state.reduction}
                     />
-                    <View>
-                        <Text>Catégorie </Text>
-                        {this.state.category.map((cat, index) => {
-                            return (
-                                <Text>{cat}</Text>
-                            )
+                    <Text>Catégories</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <View style={styles.scrollHoriz}>
+                            {this.state.category.map((cat, index) => {
+                                return (
+                                    <CheckBox
+                                        center
+                                        title={cat.value}
+                                        iconLeft
+                                        iconType='material'
+                                        checkedIcon='done'
+                                        uncheckedIcon='add'
+                                        key={index}
+                                        onPress={() => this._handleCheckbox(cat)}
+                                        checked={cat.checked}
+                                    />
+                                );
 
-                        })}
-                    </View>
+                            })}
+
+                        </View>
+                    </ScrollView>
 
                     <View style={styles.buttons}>
                         <TouchableHighlight
@@ -197,16 +257,27 @@ class CreatePage extends React.Component {
         )
     }
 
+    _reformateChecked(){
+        const check = this.state.category.filter((check) => {
+            return check.checked
+        });
+        const newChecked = check.map((c) => {
+            delete c.checked;
+            return c;
+        });
+        return newChecked;
+    }
+
     _createDeal = async () => {
+        const category = this._reformateChecked();
         const {description, image, title, reduction, location} = this.state;
         this.componentDidMount();
         if (location != null) {
             await this.props.createDealMutation({
-                variables: {description, image, title, reduction, location}
+                variables: {description, image, title, reduction, location, category}
             });
             this.props.onComplete()
         }
-
     };
 
     _openModal = () => {
@@ -215,6 +286,15 @@ class CreatePage extends React.Component {
 
     _closeModal = () => {
         this.setState({modalVisible: false});
+    };
+
+    _handleCheckbox = (item) => {
+        const itemchecked = item;
+        itemchecked.checked = !item.checked;
+        this.setState({
+            ...item,
+            checked: !item.checked
+        });
     };
 
     takePicture() {
@@ -282,6 +362,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         height: 100,
         fontSize: 20,
+    },
+    scrollHoriz: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        width: 700,
+        paddingTop: 20,
+        paddingBottom: 20,
     },
     buttons: {
         flex: 1,

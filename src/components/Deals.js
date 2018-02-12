@@ -14,6 +14,8 @@ const allDealsQuery = gql`
             id
             image
             title
+            reduction
+            category
             description
             location {
                 latitude
@@ -86,7 +88,7 @@ class Deals extends Component {
                     name='add'
                     color='#f50'
                     containerStyle={styles.buttonAdd}
-                    onPress={() => this._openModal() } />
+                    onPress={() => this._openModal()}/>
                 <ScrollView refreshControl={
                     <RefreshControl
                         refreshing={this.props.data.networkStatus === 4}
@@ -112,6 +114,7 @@ class Deals extends Component {
             </View>
         );
     }
+
     _openModal = () => {
         this.setState({modalVisible: true})
     };
@@ -125,7 +128,7 @@ const GQLDeals = graphql(allDealsQuery)(Deals);
 
 const RouteConfig = {
     Deals: {screen: GQLDeals},
-    Deal: {screen: Deal},
+    Deal: {screen: Deal}
 };
 
 export default StackNavigator(RouteConfig);

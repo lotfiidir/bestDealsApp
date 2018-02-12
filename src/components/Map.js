@@ -20,6 +20,9 @@ const allDealsQuery = gql`
 
 
 class Map extends Component {
+    static navigationOptions =  {
+        title: 'Carte des bon plans'
+    };
     constructor(props) {
         super(props);
         this.state = {
