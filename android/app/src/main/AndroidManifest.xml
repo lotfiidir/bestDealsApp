@@ -22,6 +22,7 @@
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
+        android:launchMode="singleTask"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
         android:windowSoftInputMode="adjustResize">
         <intent-filter>
@@ -29,6 +30,15 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+        <intent-filter>
+            <action android:name="Android.intent.action.VIEW" />
+            <category android:name="Android.intent.category.DEFAULT" />
+            <category android:name="Android.intent.category.BROWSABLE" />
+            <data
+                    android:host="bestdealsapp.eu.auth0.com"
+                    android:pathPrefix="/android/${applicationId}/callback"
+                    android:scheme="${applicationId}" />
+        </intent-filter>
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyC6BbRIWsbm2XIZ4O8iWD7ZfZMGAGzy3s8"/>

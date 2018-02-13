@@ -1,9 +1,74 @@
+import React from 'react';
+import { Platform, StatusBar } from "react-native";
 import {StackNavigator, TabNavigator} from 'react-navigation';
+import { Icon } from 'react-native-elements';
 
 import Map from "../components/Map";
 import Deals from "../components/Deals";
+import SignUp from "../components/user/SignUp";
+import SignIn from "../components/user/SignIn";
+import Profile from "../components/user/Profile";
+import Authentification from "../components/user/Authentification";
 
-const RouteConfig = {
+const headerStyle = {
+    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+};
+
+
+export const SignedOut = StackNavigator({
+    SignUp: {
+        screen: SignUp,
+        navigationOptions: {
+            title: "Sign Up",
+            headerStyle
+        }
+    },
+    SignIn: {
+        screen: SignIn,
+        navigationOptions: {
+            title: "Sign In",
+            headerStyle
+        }
+    }
+});
+
+export const SignedIn = TabNavigator(
+    {
+        Home: {
+            screen: Deals,
+            navigationOptions: {
+                tabBarLabel: "Accueil",
+                tabBarIcon: ({ tintColor }) =>
+                    <Icon name="home" iconType='material' size={30} color={tintColor} />
+            }
+        },
+        Map: {
+            screen: Map,
+            navigationOptions: {
+                tabBarLabel: "Carte",
+                tabBarIcon: ({ tintColor }) =>
+                    <Icon name="map-marker" iconType='material' size={30} color={tintColor} />
+            }
+        },
+        Profile: {
+            screen: Profile,
+            navigationOptions: {
+                tabBarLabel: "Profile",
+                tabBarIcon: ({ tintColor }) =>
+                    <Icon name="account-circle" iconType='material' size={30} color={tintColor} />
+            }
+        }
+    },
+    {
+        tabBarOptions: {
+            style: {
+                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+            }
+        }
+    }
+);
+
+/*const RouteConfig = {
     Home: {
         screen: Deals,
         navigationOptions: {
@@ -26,8 +91,31 @@ const TabConfig = {
     }
 };
 
-export const AppNavigator = TabNavigator(RouteConfig, TabConfig);
+export const AppNavigator = TabNavigator(RouteConfig, TabConfig);*/
 
+export const createRootNavigator = (signedIn = false) => {
+    return StackNavigator(
+        {
+            SignedIn: {
+                screen: SignedIn,
+                navigationOptions: {
+                    gesturesEnabled: false
+                }
+            },
+            SignedOut: {
+                screen: SignedOut,
+                navigationOptions: {
+                    gesturesEnabled: false
+                }
+            }
+        },
+        {
+            headerMode: "none",
+            mode: "modal",
+            initialRouteName: signedIn ? "SignedIn" : "SignedOut"
+        }
+    );
+};
 
 /*
 export const AppNavigator = StackNavigator({
