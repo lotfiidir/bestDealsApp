@@ -10,24 +10,18 @@ import SignIn from "../components/user/SignIn";
 import Profile from "../components/user/Profile";
 import Authentification from "../components/user/Authentification";
 
-const headerStyle = {
-    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-};
-
 
 export const SignedOut = StackNavigator({
     SignUp: {
         screen: SignUp,
         navigationOptions: {
             title: "Sign Up",
-            headerStyle
         }
     },
     SignIn: {
         screen: SignIn,
         navigationOptions: {
             title: "Sign In",
-            headerStyle
         }
     }
 });
@@ -39,7 +33,7 @@ export const SignedIn = TabNavigator(
             navigationOptions: {
                 tabBarLabel: "Accueil",
                 tabBarIcon: ({ tintColor }) =>
-                    <Icon name="home" iconType='material' size={30} color={tintColor} />
+                    <Icon name="home" iconType='material' size={25} color={tintColor} />
             }
         },
         Map: {
@@ -47,7 +41,7 @@ export const SignedIn = TabNavigator(
             navigationOptions: {
                 tabBarLabel: "Carte",
                 tabBarIcon: ({ tintColor }) =>
-                    <Icon name="map-marker" iconType='material' size={30} color={tintColor} />
+                    <Icon name="map" iconType='material' size={25} color={tintColor} />
             }
         },
         Profile: {
@@ -55,15 +49,15 @@ export const SignedIn = TabNavigator(
             navigationOptions: {
                 tabBarLabel: "Profile",
                 tabBarIcon: ({ tintColor }) =>
-                    <Icon name="account-circle" iconType='material' size={30} color={tintColor} />
+                    <Icon name="account-circle" iconType='material' size={25} color={tintColor} />
             }
         }
     },
     {
+        tabBarPosition: 'bottom',
         tabBarOptions: {
-            style: {
-                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-            }
+            upperCaseLabel: false,
+            showIcon: true
         }
     }
 );

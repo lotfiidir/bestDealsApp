@@ -14,7 +14,7 @@ import {
     TouchableHighlight,
 } from 'react-native';
 import Camera from 'react-native-camera';
-import {Icon, CheckBox} from 'react-native-elements';
+import {Icon, CheckBox, List, ListItem} from 'react-native-elements';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 
@@ -104,7 +104,8 @@ class CreatePage extends React.Component {
                     value: 'Téléphonie',
                     checked: false
                 }
-            ]
+            ],
+            brand: [],
         };
     }
 
@@ -196,6 +197,30 @@ class CreatePage extends React.Component {
                             />
                         </View>
                     </View>
+                    <View style={styles.brandContainer}>
+                        <TextInput
+                            style={styles.descriptionInput}
+                            placeholder='Marque, magasin..'
+                            onChangeText={(text) => this._logoApi(text)}
+                        />
+                        <List containerStyle={{marginBottom: 20}} style={styles.autoCompleteList}>
+                            {
+                                this.state.brand.map((logo, i) => (
+                                    <ListItem
+                                        onPress={() => {
+                                            this.setState({
+                                                image: logo.logo,
+                                                brand:[]
+                                            })
+                                        }}
+                                        avatar={{uri: logo.logo}}
+                                        key={i}
+                                        title={logo.name}
+                                    />
+                                ))
+                            }
+                        </List>
+                    </View>
                     <TextInput
                         style={styles.descriptionInput}
                         placeholder='Titre...'
@@ -257,7 +282,7 @@ class CreatePage extends React.Component {
         )
     }
 
-    _reformateChecked(){
+    _reformateChecked() {
         const check = this.state.category.filter((check) => {
             return check.checked
         });
@@ -279,6 +304,21 @@ class CreatePage extends React.Component {
             this.props.onComplete()
         }
     };
+
+    _logoApi(brand) {
+        fetch(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${brand}`)
+            .then((data) => {
+                if(brand.length > 0){
+                    this.setState({brand: JSON.parse(data._bodyInit)})
+                    return;
+                }
+                this.setState({brand: []})
+            })
+            .catch(() => {
+                console.log("error")
+            });
+
+    }
 
     _openModal = () => {
         this.setState({modalVisible: true})
@@ -352,6 +392,15 @@ const styles = StyleSheet.create({
     imageInput: {
         color: 'rgba(42,126,211,1)',
         height: 60,
+    },
+    brandContainer: {
+        position: 'relative',
+    },
+    autoCompleteList: {
+        height: 200,
+        position: 'absolute',
+        top: 0,
+        left: 0,
     },
     descriptionInput: {
         paddingHorizontal: 20,

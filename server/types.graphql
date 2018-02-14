@@ -1,13 +1,13 @@
 # The following types define the data model of the example service
 # based on which the GraphQL API is generated
-
-type User @model {
-  id: ID! @isUnique
-  updatedAt: DateTime!
-  name: String!
-  image: String!
-  deals: [Deal!]! @relation(name: "UserDeals")
-}
+#
+#type User @model {
+#  id: ID! @isUnique
+#  updatedAt: DateTime!
+#  name: String!
+#  image: String!
+#  deals: [Deal!]! @relation(name: "UserDeals")
+#}
 
 type Deal @model {
   id: ID! @isUnique
@@ -17,3 +17,19 @@ type Deal @model {
   createdAt: DateTime!
   author: User! @relation(name: "UserDeals")
 }
+
+# added by email-password template: (please uncomment)
+type User @model {
+  # Required system field:
+  id: ID! @isUnique # read-only (managed by Graphcool)
+
+  # Optional system fields (remove if not needed):
+  createdAt: DateTime! # read-only (managed by Graphcool)
+  updatedAt: DateTime! # read-only (managed by Graphcool)
+
+  email: String! @isUnique
+  password: String!
+  deals: [Deal!]! @relation(name: "UserDeals")
+}
+
+

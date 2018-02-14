@@ -5,6 +5,7 @@ import {StackNavigator} from 'react-navigation';
 import {Icon} from 'react-native-elements';
 import gql from "graphql-tag";
 import {graphql} from "react-apollo";
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 const allDealsQuery = gql`
     query {
@@ -20,9 +21,10 @@ const allDealsQuery = gql`
 
 
 class Map extends Component {
-    static navigationOptions =  {
+    static navigationOptions = {
         title: 'Carte des bon plans'
     };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -36,69 +38,51 @@ class Map extends Component {
             error: null
         };
     }
+
     componentWillUnmount() {
         navigator.geolocation.clearWatch(this.watchId);
     }
 
-    _locateMe() {
-        if (Platform.OS === 'android') {
-            PermissionsAndroid.check(PermissionsAndroid.ACCESS_FINE_LOCATION)
-                .then()
-        } else {
-            console.log('locate');
-        }
-    }
-
-    requestLocationPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                {
-                    'title': 'Cool Photo App Camera Permission',
-                    'message': 'Cool Photo App needs access to your camera ' +
-                    'so you can take awesome pictures.'
-                }
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use the location")
-            } else {
-                console.log("Location permission denied");
-                Alert.alert(
-                    'Can we access your Location?',
-                    'We need access so you can set your location',
-                    [
-                        {
-                            text: 'No way',
-                            onPress: () => console.log('Permission denied'),
-                            style: 'cancel',
-                        },
-                        this.state.photoPermission == 'undetermined'
-                            ? {text: 'OK', onPress: this._requestPermission}
-                            : {text: 'Open Settings', onPress: PermissionsAndroid.openSettings},
-                    ],
-                )
-            }
-        } catch (err) {
-            console.warn(err)
-        }
-    };
 
     _alertForGPSPermission() {
-        console.log('alert');
-        Alert.alert(
-            'Can we access your Location?',
-            'We need access so you can set your location',
-            [
-                {
-                    text: 'No way',
-                    onPress: () => console.log('Permission denied'),
-                    style: 'cancel',
-                },
-                this.state.photoPermission == 'undetermined'
-                    ? {text: 'OK', onPress: this._requestPermission}
-                    : {text: 'Open Settings', onPress: Permissions.openSettings},
-            ],
+        LocationServicesDialogBox.checkLocationServicesIsEnabled({
+            message: "<h2>Utiliser la géolocalisation ?</h2> \
+                            Pour pouvoir ajouter un bon plan:<br/><br/>\
+                            Utiliser le GPS pour la localisation<br/><br/>",
+            ok: "OUI",
+            cancel: "NON",
+        }).then(() => {
+                this.watchId = navigator.geolocation.watchPosition(position => {
+                    this.setState({
+                        deals: {
+                            location: {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            }
+                        }
+                    });
+                    console.log(this.state.deals.location);
+                })
+            }, (error) => {
+                console.log(error);
+            },
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10},
         )
+            .then(() => {
+                navigator.geolocation.getCurrentPosition(position => {
+                    this.setState({
+                        deals:{
+                            location: {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            }
+                        }
+                    })
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
 
@@ -119,14 +103,21 @@ class Map extends Component {
                     provider={PROVIDER_GOOGLE}
                     style={styles.map}
                     initialRegion={{
-                        latitude: 49.209355,
-                        longitude: -0.363901,
+                        latitude: this.state.deals.location.latitude,
+                        longitude: this.state.deals.location.longitude,
                         latitudeDelta: 0.015,
                         longitudeDelta: 0.0121,
                     }}
+                    region={{
+                        latitude: this.state.deals.location.latitude,
+                        longitude: this.state.deals.location.longitude,
+                        latitudeDelta: 0.015,
+                        longitudeDelta: 0.0121,
+                    }}
+
                     onRegionChangeComplete={this.onRegionChangeComplete}
                 >
-                    {loading && <Marker coordinate={this.state.deals.location} />}{
+                    {loading && <Marker coordinate={this.state.deals.location}/>}{
                     deals.map((deal, index) => {
                         return (
                             <Marker
@@ -143,7 +134,7 @@ class Map extends Component {
                     name='my-location'
                     color='#425458'
                     containerStyle={styles.buttonLocation}
-                    onPress={() => this.requestLocationPermission()}/>
+                    onPress={() => this._alertForGPSPermission()}/>
 
             </View>
         )

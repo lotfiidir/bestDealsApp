@@ -32,6 +32,7 @@ export default class App extends React.Component {
         }
 
         const Layout = createRootNavigator(signedIn);
+
         return (
             <ApolloProvider client={client}>
                 <Layout/>

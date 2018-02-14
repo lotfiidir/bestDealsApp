@@ -15,7 +15,9 @@ export default () => (
                 buttonStyle={{ marginTop: 20 }}
                 backgroundColor="#03A9F4"
                 title="SIGN IN"
-                onPress={() => onSignIn()}
+                onPress={() => {
+                    onSignIn().then(() => navigation.navigate("SignedIn"));
+                }}
             />
         </Card>
     </View>
