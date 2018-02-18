@@ -1,5 +1,4 @@
 import {AsyncStorage} from "react-native";
-import gql from "graphql-tag";
 
 export const USER_KEY = "auth-demo-key";
 

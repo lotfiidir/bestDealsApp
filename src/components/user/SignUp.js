@@ -47,59 +47,63 @@ class SignUp extends Component {
             variables: {email, password, name}
         });
     };
-    _isValidate(){
+
+    _isValidate() {
         const {email, password, name, errorPassword} = this.state;
-        if(email != '' && password != '' &&  errorPassword == '' && name != '') {
+        if (email != '' && password != '' && errorPassword == '' && name != '') {
             this.setState({isValid: true})
         }
         this.setState({isValid: true})
     }
-    _validation(){
+
+    _validation() {
         const {email, password, name} = this.state;
-        if(email == ''){
+        if (email == '') {
             this.setState({errorEmail: 'Manquant'})
         }
-        if(name == ''){
+        if (name == '') {
             this.setState({errorName: 'Manquant'})
         }
-        if(password == ''){
+        if (password == '') {
             this.setState({errorPassword: 'Manquant'})
         }
         this._isValidate()
     }
 
     render() {
-        const { navigate } = this.props.navigation;
+        const {navigate} = this.props.navigation;
         return (
             <View style={{paddingVertical: 20}}>
                 <Card>
                     <Text style={{color: "#FF0000"}}>{this.state.error}</Text>
                     <FormLabel>Nom * <Text style={{color: "#FF0000"}}>{this.state.errorName}</Text></FormLabel>
                     <FormInput onChangeText={(text) => {
-                        if(text != ''){
+                        if (text != '') {
                             this.setState({name: text})
                             this.setState({errorName: ''})
                         }
                     }} placeholder="Nom..."/>
                     <FormLabel>Email * <Text style={{color: "#FF0000"}}>{this.state.errorEmail}</Text></FormLabel>
                     <FormInput onChangeText={(text) => {
-                        if(text != ''){
+                        if (text != '') {
                             this.setState({email: text})
                             this.setState({errorEmail: ''})
                         }
 
                     }} placeholder="Address mail..."/>
-                    <FormLabel>Mot de passe * <Text style={{color: "#FF0000"}}>{this.state.errorPassword}</Text></FormLabel>
+                    <FormLabel>Mot de passe * <Text
+                        style={{color: "#FF0000"}}>{this.state.errorPassword}</Text></FormLabel>
                     <FormInput onChangeText={(text) => {
-                        if(text != ''){
+                        if (text != '') {
                             this.setState({password: text})
                             this.setState({errorEmail: ''})
                         }
                     }} secureTextEntry
                                placeholder="Password..."/>
-                    <FormLabel>Confirmé mot de passe * <Text style={{color: "#FF0000"}}>{this.state.errorConfirmPassword}</Text></FormLabel>
+                    <FormLabel>Confirmé mot de passe * <Text
+                        style={{color: "#FF0000"}}>{this.state.errorConfirmPassword}</Text></FormLabel>
                     <FormInput secureTextEntry onChangeText={(text) => {
-                        if (text != this.state.password){
+                        if (text != this.state.password) {
                             this.setState({errorPassword: ' Pas similaire'})
                         } else {
                             this.setState({errorPassword: ''})
@@ -114,12 +118,13 @@ class SignUp extends Component {
                             this._validation();
                             if (this.state.isValid) {
                                 this._signUp().then(() => {
-                                    onSignIn().then(() => navigation.navigate("SignedIn"));
                                 })
                                     .catch((error) => {
                                         console.log(error);
                                         this.setState({error: 'Utilisateur déja existant'})
                                     });
+                                onSignIn();
+                                navigate("SignedIn");
                             }
                         }
                         }
