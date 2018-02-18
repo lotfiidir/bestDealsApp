@@ -1,10 +1,13 @@
 import React, {Component} from "react";
-import {View} from "react-native";
+import {View, Text} from "react-native";
 import {Card, Button, FormLabel, FormInput} from "react-native-elements";
 import {onSignIn} from "./auth";
 import {auth0} from "./auth-cridentials";
 import gql from "graphql-tag";
 import {graphql} from "react-apollo";
+import {StackNavigator} from "react-navigation";
+
+import SignIn from './SignIn';
 
 const createUser = gql`
     mutation ($email: String!, $password: String!, $name: String!){
@@ -23,12 +26,18 @@ const createUser = gql`
 
 
 class SignUp extends Component {
-    constructor({props, navigation}) {
+    constructor(props) {
         super(props);
         this.state = {
             email: '',
+            errorEmail: '',
             password: '',
-            name: ''
+            errorPassword: '',
+            errorConfirmPassword: '',
+            name: '',
+            errorName: '',
+            error: '',
+            isValid: ''
         }
     }
 
@@ -38,43 +47,80 @@ class SignUp extends Component {
             variables: {email, password, name}
         });
     };
+    _isValidate(){
+        const {email, password, name, errorPassword} = this.state;
+        if(email != '' && password != '' &&  errorPassword == '' && name != '') {
+            this.setState({isValid: true})
+        }
+        this.setState({isValid: true})
+    }
+    _validation(){
+        const {email, password, name} = this.state;
+        if(email == ''){
+            this.setState({errorEmail: 'Manquant'})
+        }
+        if(name == ''){
+            this.setState({errorName: 'Manquant'})
+        }
+        if(password == ''){
+            this.setState({errorPassword: 'Manquant'})
+        }
+        this._isValidate()
+    }
 
     render() {
+        const { navigate } = this.props.navigation;
         return (
             <View style={{paddingVertical: 20}}>
                 <Card>
-                    <FormLabel>Name</FormLabel>
-                    <FormInput onChangeText={(text) => this.setState({name: text})} placeholder="Name..."/>
-                    <FormLabel>Email</FormLabel>
-                    <FormInput onChangeText={(text) => this.setState({email: text})} placeholder="Email address..."/>
-                    <FormLabel>Password</FormLabel>
-                    <FormInput onChangeText={(text) => this.setState({password: text})} secureTextEntry
+                    <Text style={{color: "#FF0000"}}>{this.state.error}</Text>
+                    <FormLabel>Nom * <Text style={{color: "#FF0000"}}>{this.state.errorName}</Text></FormLabel>
+                    <FormInput onChangeText={(text) => {
+                        if(text != ''){
+                            this.setState({name: text})
+                            this.setState({errorName: ''})
+                        }
+                    }} placeholder="Nom..."/>
+                    <FormLabel>Email * <Text style={{color: "#FF0000"}}>{this.state.errorEmail}</Text></FormLabel>
+                    <FormInput onChangeText={(text) => {
+                        if(text != ''){
+                            this.setState({email: text})
+                            this.setState({errorEmail: ''})
+                        }
+
+                    }} placeholder="Address mail..."/>
+                    <FormLabel>Mot de passe * <Text style={{color: "#FF0000"}}>{this.state.errorPassword}</Text></FormLabel>
+                    <FormInput onChangeText={(text) => {
+                        if(text != ''){
+                            this.setState({password: text})
+                            this.setState({errorEmail: ''})
+                        }
+                    }} secureTextEntry
                                placeholder="Password..."/>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormInput secureTextEntry placeholder="Confirm Password..."/>
+                    <FormLabel>Confirmé mot de passe * <Text style={{color: "#FF0000"}}>{this.state.errorConfirmPassword}</Text></FormLabel>
+                    <FormInput secureTextEntry onChangeText={(text) => {
+                        if (text != this.state.password){
+                            this.setState({errorPassword: ' Pas similaire'})
+                        } else {
+                            this.setState({errorPassword: ''})
+                        }
+                    }} placeholder="Confirmé mot de passe..."/>
 
                     <Button
                         buttonStyle={{marginTop: 20}}
                         backgroundColor="#03A9F4"
                         title="SIGN UP"
                         onPress={() => {
-                            this._signUp().then(() => {
-                                onSignIn().then(() => navigation.navigate("SignedIn"));
-                            });
-
-                            /*auth0
-                                .webAuth
-                                .authorize({scope: 'openid profile', audience: 'https://bestdealsapp.eu.auth0.com/userinfo'})
-                                .then(credentials => {
-                                    Alert.alert(
-                                        'Success',
-                                        'AccessToken: ' + credentials.accessToken,
-                                        [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-                                        {cancelable: false}
-                                    );
-                                    this.setState({accessToken: credentials.accessToken});
+                            this._validation();
+                            if (this.state.isValid) {
+                                this._signUp().then(() => {
+                                    onSignIn().then(() => navigation.navigate("SignedIn"));
                                 })
-                                .catch(error => console.log(error));*/
+                                    .catch((error) => {
+                                        console.log(error);
+                                        this.setState({error: 'Utilisateur déja existant'})
+                                    });
+                            }
                         }
                         }
                     />
@@ -83,7 +129,7 @@ class SignUp extends Component {
                         backgroundColor="transparent"
                         textStyle={{color: "#bcbec1"}}
                         title="Sign In"
-                        onPress={() => navigation.navigate("SignIn")}
+                        onPress={() => navigate("SignIn")}
                     />
                 </Card>
             </View>
@@ -91,4 +137,4 @@ class SignUp extends Component {
     }
 }
 
-export default graphql(createUser, {name: 'createUser'})(SignUp)
+export default graphql(createUser, {name: 'createUser'})(SignUp);

@@ -29,6 +29,21 @@ const createDealMutation = gql`
     }
 `;
 
+/* add onToMany relation mutation
+mutation {
+        addToUserDeals(
+            dealsDealId: $idDeal
+            userUserId: $idUser
+        ) {
+            dealsDeal {
+                id
+            }
+            userUser {
+                name
+            }
+        }
+    }*/
+
 
 class CreatePage extends React.Component {
     constructor(props) {
@@ -222,18 +237,22 @@ class CreatePage extends React.Component {
                         </List>
                     </View>
                     <TextInput
+                        returnKeyType="next"
                         style={styles.descriptionInput}
                         placeholder='Titre...'
                         onChangeText={(text) => this.setState({title: text})}
                         value={this.state.title}
                     />
                     <TextInput
+                        returnKeyType="next"
+                        multiline={true}
                         style={styles.descriptionInput}
                         placeholder='Description...'
                         onChangeText={(text) => this.setState({description: text})}
                         value={this.state.description}
                     />
                     <TextInput
+                        returnKeyType="next"
                         style={styles.reductionInput}
                         keyboardType='numeric'
                         placeholder='% de la réduction...'

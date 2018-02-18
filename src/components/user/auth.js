@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 export const USER_KEY = "auth-demo-key";
 
 export const onSignIn = () => {
+    console.log("sign in ------")
     AsyncStorage.setItem(USER_KEY, "true");
 };
 
