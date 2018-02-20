@@ -8,6 +8,7 @@ import {ListItem, Icon, Overlay} from 'react-native-elements';
 import Deal from './Deal';
 import CreateDeal from './CreatePage';
 
+
 const allDealsQuery = gql`
     query {
         allDeals(orderBy: createdAt_DESC) {
@@ -20,6 +21,10 @@ const allDealsQuery = gql`
             location {
                 latitude
                 longitude
+            }
+            user{
+                id
+                name
             }
         }
     }`;
@@ -39,6 +44,9 @@ const allDealsQuery = gql`
 `;*/
 
 class Deals extends Component {
+    static navigationOptions = {
+        title: 'BestDeals'
+    };
     constructor(props) {
         super(props);
         this.state = {

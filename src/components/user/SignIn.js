@@ -12,6 +12,11 @@ const signinUser = gql`
             password: $password
         }){
             token
+            user {
+                id
+                name
+                email
+            }
         }
     }`;
 
@@ -26,9 +31,10 @@ class SignIn extends Component{
 
     _signIn = async () => {
         const {email, password} = this.state;
-        await this.props.signinUser({
+        const result = await this.props.signinUser({
             variables: {email, password}
         });
+        return result.data.signinUser;
     };
 
     render(){
@@ -47,12 +53,11 @@ class SignIn extends Component{
                         backgroundColor="#03A9F4"
                         title="SIGN IN"
                         onPress={() => {
-                            this._signIn().then(() => {
-                                onSignIn();
-                                navigate("SignedIn");
+                            this._signIn().then((userData) => {
+                                onSignIn(userData);
+                                navigate("SignedIn", userData.user);
                             })
                                 .catch((error) => {
-                                    console.log("erroe",error);
                                     this.setState({error: 'Email ou mot de passe incorrect !'})
                                 });
                         }}

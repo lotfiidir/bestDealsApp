@@ -9,6 +9,7 @@ import SignUp from "../components/user/SignUp";
 import SignIn from "../components/user/SignIn";
 import Profile from "../components/user/Profile";
 import Authentification from "../components/user/Authentification";
+import Search from "../components/Search";
 
 
 export const SignedOut = StackNavigator({
@@ -42,6 +43,14 @@ export const SignedIn = TabNavigator(
                 tabBarLabel: "Carte",
                 tabBarIcon: ({ tintColor }) =>
                     <Icon name="map" iconType='material' size={25} color={tintColor} />
+            }
+        },
+        Search: {
+            screen: Search,
+            navigationOptions: {
+                tabBarLabel: "Search",
+                tabBarIcon: ({ tintColor }) =>
+                    <Icon name="search" iconType='material' size={25} color={tintColor} />
             }
         },
         Profile: {
