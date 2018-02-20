@@ -2,14 +2,27 @@ import React, {Component} from 'react'
 import {Image, Text, StyleSheet, Dimensions, Alert, View, ScrollView, Modal, AsyncStorage} from 'react-native'
 import MapView, {PROVIDER_GOOGLE, Marker} from "react-native-maps";
 import {Icon} from 'react-native-elements';
+import {graphql} from "react-apollo";
+import gql from "graphql-tag";
 
 import UpdateDeal from './UpdateDeal';
+
+
+
+const deleteDealMutation = gql`
+    mutation ($id: ID!){
+        deleteDeal(id: $id) {
+            id
+        }
+    }
+`;
+
 
 const {width} = Dimensions.get('window');
 
 const Field = ({name, value}) => <Text style={styles.field}>{`${name}: ${value}`}</Text>
 
-export default class Deal extends Component {
+class Deal extends Component {
     static navigationOptions = (props) => {
         const {title} = props.navigation.state.params.deal;
         return ({
@@ -33,6 +46,12 @@ export default class Deal extends Component {
         }).catch();
     }
 
+    _deleteDealAsync = async () => {
+      const {id} = this.props.navigation.state.params.deal;
+        await this.props.deleteDealMutation({
+            variables: {id}
+        });
+    };
     /*state = {
         width: 0,
         height: 0,
@@ -60,7 +79,10 @@ export default class Deal extends Component {
             'Supprimer le deal',
             [
                 {text: 'NON', onPress: () => console.log('Cancel Pressed')},
-                {text: 'Oui', onPress: () => console.log('OK Pressed')},
+                {text: 'Oui', onPress: () => {
+                    this._deleteDealAsync();
+                    this.props.navigation.navigate("Home");
+                }},
             ]
         )
     };
@@ -164,3 +186,5 @@ const styles = StyleSheet.create({
         zIndex: 10,
     }
 });
+
+export default graphql(deleteDealMutation, {name: 'deleteDealMutation'})(Deal);

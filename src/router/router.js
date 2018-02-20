@@ -16,13 +16,13 @@ export const SignedOut = StackNavigator({
     SignUp: {
         screen: SignUp,
         navigationOptions: {
-            title: "Sign Up",
+            title: "Inscription",
         }
     },
     SignIn: {
         screen: SignIn,
         navigationOptions: {
-            title: "Sign In",
+            title: "Connexion",
         }
     }
 });
@@ -56,7 +56,7 @@ export const SignedIn = TabNavigator(
         Profile: {
             screen: Profile,
             navigationOptions: {
-                tabBarLabel: "Profile",
+                tabBarLabel: "Profil",
                 tabBarIcon: ({ tintColor }) =>
                     <Icon name="account-circle" iconType='material' size={25} color={tintColor} />
             }

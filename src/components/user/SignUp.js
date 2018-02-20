@@ -21,6 +21,8 @@ const createUser = gql`
             }
         ) {
             id
+            name
+            email
         }
     }`;
 
@@ -43,9 +45,10 @@ class SignUp extends Component {
 
     _signUp = async () => {
         const {email, password, name} = this.state;
-        await this.props.createUser({
+        const result = await this.props.createUser({
             variables: {email, password, name}
         });
+        return result.data.createUser;
     };
 
     _isValidate() {
@@ -90,7 +93,7 @@ class SignUp extends Component {
                             this.setState({errorEmail: ''})
                         }
 
-                    }} placeholder="Address mail..."/>
+                    }} placeholder="Addresse mail..."/>
                     <FormLabel>Mot de passe * <Text
                         style={{color: "#FF0000"}}>{this.state.errorPassword}</Text></FormLabel>
                     <FormInput onChangeText={(text) => {
@@ -99,7 +102,7 @@ class SignUp extends Component {
                             this.setState({errorEmail: ''})
                         }
                     }} secureTextEntry
-                               placeholder="Password..."/>
+                               placeholder="Mot de passe..."/>
                     <FormLabel>Confirmé mot de passe * <Text
                         style={{color: "#FF0000"}}>{this.state.errorConfirmPassword}</Text></FormLabel>
                     <FormInput secureTextEntry onChangeText={(text) => {
@@ -108,23 +111,25 @@ class SignUp extends Component {
                         } else {
                             this.setState({errorPassword: ''})
                         }
-                    }} placeholder="Confirmé mot de passe..."/>
+                    }} placeholder="Confirmer mot de passe..."/>
 
                     <Button
                         buttonStyle={{marginTop: 20}}
                         backgroundColor="#03A9F4"
-                        title="SIGN UP"
+                        title="S'inscrire"
                         onPress={() => {
                             this._validation();
                             if (this.state.isValid) {
-                                this._signUp().then(() => {
+                                let propUser = {};
+                                this._signUp().then((userData) => {
+                                    propUser = userData;
                                 })
                                     .catch((error) => {
                                         console.log(error);
                                         this.setState({error: 'Utilisateur déja existant'})
                                     });
-                                onSignIn();
-                                navigate("SignedIn");
+                                onSignIn(propUser);
+                                navigate("SignedIn", propUser.user);
                             }
                         }
                         }
@@ -133,7 +138,7 @@ class SignUp extends Component {
                         buttonStyle={{marginTop: 20}}
                         backgroundColor="transparent"
                         textStyle={{color: "#bcbec1"}}
-                        title="Sign In"
+                        title="Se connecter"
                         onPress={() => navigate("SignIn")}
                     />
                 </Card>

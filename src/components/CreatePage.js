@@ -11,7 +11,7 @@ import {
     CameraRoll,
     BackHandler,
     ScrollView,
-    TouchableHighlight,
+    TouchableHighlight, AsyncStorage,
 } from 'react-native';
 import Camera from 'react-native-camera';
 import {Icon, CheckBox, List, ListItem} from 'react-native-elements';
@@ -19,15 +19,34 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 
 
 const createDealMutation = gql`
-    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int, $location: DeallocationLocation, $category: Json ){
-        createDeal(description: $description, image: $image, title: $title, reduction: $reduction, location: $location, category: $category ) {
+    mutation ($description: String!, $image: String!, $title: String!, $reduction: Int, $location: DeallocationLocation, $category: Json , $userId: ID){
+        createDeal(description: $description, image: $image, title: $title, reduction: $reduction, location: $location, category: $category, userId: $userId ) {
             id
             location {
+                id
+            }
+            user {
                 id
             }
         }
     }
 `;
+
+/*const relationDealUser = gql`
+    mutation ($idDeal: ID!, $idUser: ID!,){
+        addToUserDeals(
+            dealsDealId: $idDeal
+            userUserId: $idUser
+        ) {
+            dealsDeal {
+                id
+            }
+            userUser {
+                name
+            }
+        }
+    }
+`;*/
 
 /* add onToMany relation mutation
 mutation {
@@ -50,6 +69,7 @@ class CreatePage extends React.Component {
         super(props);
 
         this.state = {
+            userId: '',
             description: '',
             image: '',
             title: '',
@@ -129,6 +149,10 @@ class CreatePage extends React.Component {
     }
 
     componentDidMount() {
+        const user = AsyncStorage.getItem("id-user");
+        user.then((data) => {
+            this.setState({userId:data});
+        }).catch();
 
         setTimeout(() => {
             LocationServicesDialogBox.checkLocationServicesIsEnabled({
@@ -314,11 +338,12 @@ class CreatePage extends React.Component {
 
     _createDeal = async () => {
         const category = this._reformateChecked();
-        const {description, image, title, reduction, location} = this.state;
+        const {description, image, title, reduction, location, userId} = this.state;
+
         this.componentDidMount();
         if (location != null) {
             await this.props.createDealMutation({
-                variables: {description, image, title, reduction, location, category}
+                variables: {description, image, title, reduction, location, category, userId}
             });
             this.props.onComplete()
         }
@@ -468,3 +493,10 @@ const styles = StyleSheet.create({
 });
 
 export default graphql(createDealMutation, {name: 'createDealMutation'})(CreatePage)
+
+/*
+export default compose(
+    graphql(createDealMutation, { name: 'createDealMutation' }),
+    graphql(relationDealUser, { name: 'relationDealUser' }),
+)(CreatePage)
+*/

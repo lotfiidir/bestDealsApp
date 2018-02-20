@@ -44,9 +44,9 @@ class SignIn extends Component{
                 <Card title="SIGN IN">
                     <Text style={{color: "#FF0000"}}>{this.state.error}</Text>
                     <FormLabel>Email</FormLabel>
-                    <FormInput placeholder="Email address..." onChangeText={(text) => this.setState({email: text})} />
-                    <FormLabel>Password</FormLabel>
-                    <FormInput secureTextEntry placeholder="Password..." onChangeText={(text) => this.setState({password: text})} />
+                    <FormInput placeholder="Adresse mail..." onChangeText={(text) => this.setState({email: text})} />
+                    <FormLabel>Mot de passe</FormLabel>
+                    <FormInput secureTextEntry placeholder="Mot de passe..." onChangeText={(text) => this.setState({password: text})} />
 
                     <Button
                         buttonStyle={{ marginTop: 20 }}
